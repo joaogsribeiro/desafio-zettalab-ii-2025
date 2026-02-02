@@ -1,27 +1,29 @@
 const express = require('express');
 const cors = require('cors');
-const { Sequelize } = require('sequelize');
-const dbConfig = require('./config/database');
+const { connection } = require('./database'); // Importa só a conexão
+const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-
-const sequelize = new Sequelize(dbConfig);
+app.use(routes);
 
 async function startServer() {
   try {
-    await sequelize.authenticate();
-    console.log('✅ Conexão com o banco de dados (Docker) estabelecida!');
-    console.log('🚀 Modo Zetta Lab ativado.');
+    // Testa a conexão que vem do arquivo database/index.js
+    await connection.authenticate();
+    console.log('✅ Conexão com o banco estabelecida!');
+
+    await connection.sync({ force: false });
+    console.log('📦 Tabelas sincronizadas.');
 
     app.listen(PORT, () => {
       console.log(`📡 Servidor rodando na porta ${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Erro ao conectar no banco:', error);
+    console.error('❌ Erro ao iniciar:', error);
   }
 }
 
