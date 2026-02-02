@@ -3,19 +3,20 @@ const routes = express.Router();
 
 const UserController = require('./controllers/UserController');
 const SessionController = require('./controllers/SessionController');
-
-// Importa o Middleware
+const TaskController = require('./controllers/TaskController');
 const authMiddleware = require('./middlewares/auth');
 
-// Rotas Públicas (Todo mundo pode acessar)
+// Rotas Públicas
 routes.post('/users', UserController.create);
 routes.post('/sessions', SessionController.store);
 
 // --- BARREIRA DE SEGURANÇA ---
-// Tudo que estiver abaixo desta linha exigirá o Token
 routes.use(authMiddleware);
 
-// Rotas Privadas (Aqui virão as tarefas...)
-// Exemplo: routes.post('/tasks', TaskController.create);
+// Rotas de Tarefas (Protegidas)
+routes.get('/tasks', TaskController.index);        // Listar
+routes.post('/tasks', TaskController.create);      // Criar
+routes.put('/tasks/:id', TaskController.update);   // Atualizar
+routes.delete('/tasks/:id', TaskController.delete); // Deletar
 
 module.exports = routes;
