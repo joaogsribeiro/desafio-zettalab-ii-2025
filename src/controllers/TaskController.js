@@ -1,60 +1,104 @@
-const { Task } = require('../database');
+const { Task, Tag } = require('../database');
 
 module.exports = {
-  // 1. LISTAR TAREFAS (Com filtro opcional de status)
+  // 1. LISTAR TAREFAS (Com filtro de Status E Tag)
   async index(req, res) {
     try {
-      const { status } = req.query; // Pega o ?status=PENDING da URL se existir
-      const where = { user_id: req.userId }; // Filtro base: só tarefas do usuário logado
+      const { status, tag_id } = req.query; // Agora pegamos o tag_id da URL
+      const where = { user_id: req.userId };
 
-      // Se o usuário mandou um status, adiciona ao filtro
       if (status) {
         where.status = status;
       }
 
-      const tasks = await Task.findAll({ where });
+      // Configuração da busca de Tags
+      const includeOptions = {
+        model: Tag,
+        as: 'tags',
+        attributes: ['id', 'name', 'color'],
+        through: { attributes: [] }
+      };
+
+      // SE tiver filtro de tag, adicionamos a regra dentro do include
+      if (tag_id) {
+        includeOptions.where = { id: tag_id };
+        // Isso força um "INNER JOIN". Ou seja:
+        // Se a tarefa não tiver essa tag, ela nem aparece na lista.
+        includeOptions.required = true; 
+      }
+
+      const tasks = await Task.findAll({
+        where,
+        include: [includeOptions]
+      });
+
       return res.json(tasks);
     } catch (error) {
+      console.error(error);
       return res.status(500).json({ error: 'Erro ao listar tarefas' });
     }
   },
 
-  // 2. CRIAR TAREFA
+  // 2. CRIAR TAREFA (Com suporte a Tags)
   async create(req, res) {
     try {
-      const { title, description } = req.body;
+      const { title, description, tags } = req.body; // Recebe o array de tags
 
       if (!title) {
         return res.status(400).json({ error: 'O título é obrigatório' });
       }
 
+      // 1. Cria a tarefa
       const task = await Task.create({
-        user_id: req.userId, // Pega o ID do token (Segurança!)
+        user_id: req.userId,
         title,
         description,
       });
 
-      return res.status(201).json(task);
+      // 2. Se vieram tags, associa elas à tarefa
+      if (tags && tags.length > 0) {
+        // A mágica do Sequelize: ele insere na tabela 'task_tags' automaticamente
+        await task.setTags(tags);
+      }
+
+      // 3. Recarrega a tarefa para devolver o JSON já com as tags dentro
+      const taskWithTags = await Task.findByPk(task.id, {
+        include: [
+          {
+            model: Tag,
+            as: 'tags',
+            attributes: ['id', 'name', 'color'],
+            through: { attributes: [] }
+          }
+        ]
+      });
+
+      return res.status(201).json(taskWithTags);
     } catch (error) {
+      console.error(error);
       return res.status(500).json({ error: 'Erro ao criar tarefa' });
     }
   },
 
-  // 3. ATUALIZAR TAREFA
+  // 3. ATUALIZAR TAREFA (Também pode atualizar tags se quiser)
   async update(req, res) {
     try {
-      const { id } = req.params; // Pega o ID da URL (/tasks/1)
-      const { title, description, status } = req.body;
+      const { id } = req.params;
+      const { title, description, status, tags } = req.body;
 
-      // Busca a tarefa garantindo que ela pertence ao usuário logado
       const task = await Task.findOne({ where: { id, user_id: req.userId } });
 
       if (!task) {
         return res.status(404).json({ error: 'Tarefa não encontrada' });
       }
 
-      // Atualiza os campos
+      // Atualiza dados básicos
       await task.update({ title, description, status });
+
+      // Se mandou tags novas, atualiza os vínculos (substitui as antigas pelas novas)
+      if (tags) {
+        await task.setTags(tags);
+      }
 
       return res.json(task);
     } catch (error) {
@@ -62,12 +106,10 @@ module.exports = {
     }
   },
 
-  // 4. DELETAR TAREFA
+  // 4. DELETAR TAREFA (Igual ao anterior)
   async delete(req, res) {
     try {
       const { id } = req.params;
-
-      // Busca a tarefa garantindo que ela pertence ao usuário logado
       const task = await Task.findOne({ where: { id, user_id: req.userId } });
 
       if (!task) {
@@ -75,8 +117,7 @@ module.exports = {
       }
 
       await task.destroy();
-
-      return res.status(204).send(); // 204 = No Content (Sucesso sem corpo)
+      return res.status(204).send();
     } catch (error) {
       return res.status(500).json({ error: 'Erro ao deletar tarefa' });
     }
