@@ -15,8 +15,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING, // Ex: "#FF0000"
       defaultValue: '#ddd',   // Cinza padrão
     },
-    // O user_id será criado automaticamente na relação 1:N
-    // (Cada tag pertence a um usuário, para você não ver as tags do vizinho)
+    // user_id será criado automaticamente na relação 1:N
+    // Se for NULL = tag do sistema (disponível para todos)
+    // Se tiver valor = tag personalizada do usuário
   });
 
   return Tag;

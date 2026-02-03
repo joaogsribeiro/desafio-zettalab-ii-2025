@@ -1,5 +1,6 @@
 const app = require('./app'); // Importa a configuração do app (que inclui Swagger + rotas)
 const { connection } = require('./database');
+const seedSystemTags = require('./database/seedSystemTags');
 
 const PORT = process.env.PORT || 3000;
 
@@ -11,6 +12,9 @@ async function startServer() {
 
     await connection.sync({ force: false });
     console.log('📦 Tabelas sincronizadas.');
+
+    // Inicializa tags do sistema (apenas se não existirem)
+    await seedSystemTags();
 
     app.listen(PORT, () => {
       console.log(`📡 Servidor rodando na porta ${PORT}`);

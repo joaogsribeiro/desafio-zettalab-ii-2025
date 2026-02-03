@@ -341,13 +341,14 @@ routes.delete("/tasks/:id", TaskController.delete);
  * @swagger
  * /tags:
  *   get:
- *     summary: Lista todas as tags do usuário autenticado
+ *     summary: Lista todas as tags disponíveis
+ *     description: Retorna tags do sistema (disponíveis para todos) e tags personalizadas do usuário autenticado
  *     tags: [Tags]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de tags
+ *         description: Lista de tags (sistema + personalizadas do usuário)
  *         content:
  *           application/json:
  *             schema:
@@ -363,6 +364,8 @@ routes.delete("/tasks/:id", TaskController.delete);
  *                     type: string
  *                   user_id:
  *                     type: integer
+ *                     nullable: true
+ *                     description: null = tag do sistema, número = tag personalizada
  *       401:
  *         description: Token não fornecido ou inválido
  */
@@ -372,7 +375,8 @@ routes.get("/tags", TagController.index);
  * @swagger
  * /tags:
  *   post:
- *     summary: Cria uma nova tag
+ *     summary: Cria uma nova tag personalizada
+ *     description: Cria uma tag personalizada do usuário. Não é possível criar tags com nomes de tags do sistema.
  *     tags: [Tags]
  *     security:
  *       - bearerAuth: []
@@ -387,10 +391,12 @@ routes.get("/tags", TagController.index);
  *             properties:
  *               name:
  *                 type: string
- *                 example: Urgente
+ *                 example: Projeto X
+ *                 description: Nome da tag (não pode duplicar tags do sistema)
  *               color:
  *                 type: string
- *                 example: "#FF0000"
+ *                 example: "#9333EA"
+ *                 description: Cor em hexadecimal (opcional, padrão é cinza)
  *     responses:
  *       201:
  *         description: Tag criada com sucesso
@@ -407,8 +413,19 @@ routes.get("/tags", TagController.index);
  *                   type: string
  *                 user_id:
  *                   type: integer
+ *       200:
+ *         description: Tag já existia para este usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                 tag:
+ *                   type: object
  *       400:
- *         description: Nome da tag é obrigatório
+ *         description: Nome obrigatório ou conflito com tag do sistema
  *       401:
  *         description: Token não fornecido ou inválido
  */
