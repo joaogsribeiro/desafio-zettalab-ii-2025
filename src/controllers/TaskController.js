@@ -100,7 +100,22 @@ module.exports = {
         await task.setTags(tags);
       }
 
-      return res.json(task);
+      // Recarrega a tarefa com as tags atualizadas
+      const taskWithTags = await Task.findByPk(task.id, {
+        include: [
+          {
+            model: Tag,
+            as: 'tags',
+            attributes: ['id', 'name', 'color'],
+            through: { attributes: [] }
+          }
+        ]
+      });
+
+      return res.status(200).json({
+        msg: 'Tarefa atualizada com sucesso',
+        task: taskWithTags
+      });
     } catch (error) {
       return res.status(500).json({ error: 'Erro ao atualizar tarefa' });
     }
@@ -117,7 +132,7 @@ module.exports = {
       }
 
       await task.destroy();
-      return res.status(204).send();
+      return res.status(200).json({ msg: 'Tarefa deletada com sucesso' });
     } catch (error) {
       return res.status(500).json({ error: 'Erro ao deletar tarefa' });
     }
