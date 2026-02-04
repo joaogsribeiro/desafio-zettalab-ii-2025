@@ -7,7 +7,10 @@ const TaskModel = require('../models/Task');
 const TagModel = require('../models/Tag'); // <--- Novo!
 
 // Cria a conexão
-const connection = new Sequelize(dbConfig);
+// Se dbConfig tem 'url', usa ela diretamente, senão usa o objeto completo
+const connection = dbConfig.url 
+  ? new Sequelize(dbConfig.url, dbConfig)
+  : new Sequelize(dbConfig);
 
 // Inicializa os modelos
 const User = UserModel(connection);
