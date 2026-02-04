@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test jest --coverage --detectOpenHandles",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:unit": "cross-env NODE_ENV=test jest --testPathPattern=unit",
+    "test:integration": "cross-env NODE_ENV=test jest --testPathPattern=integration"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,11 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@types/jest": "^30.0.0",
+    "cross-env": "^10.1.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.2.2"
   }
 }

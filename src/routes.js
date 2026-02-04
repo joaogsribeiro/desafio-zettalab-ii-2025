@@ -197,10 +197,10 @@ routes.get("/tasks", TaskController.index);
  *             properties:
  *               title:
  *                 type: string
- *                 example: Estudar Python
+ *                 example: Estudar Node.js
  *               description:
  *                 type: string
- *                 example: Aprofundar em pandas/numpy
+ *                 example: Revisar conceitos de Express e middleware
  *               tags:
  *                 type: array
  *                 items:
@@ -230,7 +230,15 @@ routes.get("/tasks", TaskController.index);
  *                   items:
  *                     type: object
  *       400:
- *         description: Título obrigatório
+ *         description: Título obrigatório ou tag(s) não encontrada(s)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Tag(s) não encontrada(s) ou você não tem acesso: 99"
  *       401:
  *         description: Token não fornecido ou inválido
  */
@@ -258,6 +266,12 @@ routes.post("/tasks", TaskValidator.validateCreate, TaskController.create);
  *           schema:
  *             type: object
  *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Estudar Node.js - Avançado
+ *               description:
+ *                 type: string
+ *                 example: Aprofundar em async/await
  *               status:
  *                 type: string
  *                 enum: [PENDING, COMPLETED]
@@ -295,6 +309,16 @@ routes.post("/tasks", TaskValidator.validateCreate, TaskController.create);
  *                       type: array
  *                       items:
  *                         type: object
+ *       400:
+ *         description: Tag(s) não encontrada(s) ou você não tem acesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Tag(s) não encontrada(s) ou você não tem acesso: 99"
  *       404:
  *         description: Tarefa não encontrada
  *       401:
