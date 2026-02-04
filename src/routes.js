@@ -490,4 +490,100 @@ routes.get("/tags", TagController.index);
  */
 routes.post("/tags", TagValidator.validateCreate, TagController.create);
 
+/**
+ * @swagger
+ * /tags/{id}:
+ *   put:
+ *     summary: Atualiza uma tag personalizada do usuário
+ *     tags: [Tags]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID da tag a ser atualizada
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Projeto Urgente
+ *               color:
+ *                 type: string
+ *                 example: "#FF5733"
+ *     responses:
+ *       200:
+ *         description: Tag atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: Tag atualizada com sucesso
+ *                 tag:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     name:
+ *                       type: string
+ *                     color:
+ *                       type: string
+ *                     user_id:
+ *                       type: integer
+ *       400:
+ *         description: Validação falhou ou conflito de nome
+ *       403:
+ *         description: Tentativa de editar tag do sistema ou tag de outro usuário
+ *       404:
+ *         description: Tag não encontrada
+ *       401:
+ *         description: Token não fornecido ou inválido
+ */
+routes.put("/tags/:id", TagValidator.validateUpdate, TagController.update);
+
+/**
+ * @swagger
+ * /tags/{id}:
+ *   delete:
+ *     summary: Deleta uma tag personalizada do usuário
+ *     tags: [Tags]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID da tag a ser deletada
+ *     responses:
+ *       200:
+ *         description: Tag deletada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: Tag deletada com sucesso
+ *       403:
+ *         description: Tentativa de deletar tag do sistema ou tag de outro usuário
+ *       404:
+ *         description: Tag não encontrada
+ *       401:
+ *         description: Token não fornecido ou inválido
+ */
+routes.delete("/tags/:id", TagController.destroy);
+
 module.exports = routes;
