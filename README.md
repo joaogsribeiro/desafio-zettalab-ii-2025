@@ -4,7 +4,7 @@
 [![Express](https://img.shields.io/badge/Express-5.2.1-blue.svg)](https://expressjs.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://www.postgresql.org/)
 [![Jest](https://img.shields.io/badge/Jest-29.x-red.svg)](https://jestjs.io/)
-[![Coverage](https://img.shields.io/badge/Coverage-88.02%25-brightgreen.svg)](https://github.com/facebook/jest)
+[![Coverage](https://img.shields.io/badge/Coverage-88.08%25-brightgreen.svg)](https://github.com/facebook/jest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > 🌐 **API em Produção:** [https://taskmanager-api-zettalab.onrender.com](https://taskmanager-api-zettalab.onrender.com)  
@@ -62,7 +62,7 @@ desafio-zettalab-ii-2025/
 │   ├── integration/
 │   │   ├── auth.test.js               # Testes de autenticação (10 testes)
 │   │   ├── tasks.test.js              # Testes de tarefas (16 testes)
-│   │   └── tags.test.js               # Testes de tags (9 testes)
+│   │   └── tags.test.js               # Testes de tags (22 testes)
 │   ├── unit/
 │   │   └── config.test.js             # Testes unitários (3 testes)
 │   └── setup.js                       # Configuração global dos testes
@@ -97,9 +97,10 @@ desafio-zettalab-ii-2025/
 
 ### Sistema de Tags
 - ✅ 8 tags do sistema predefinidas (Urgente, Importante, Trabalho, etc.)
-- ✅ Criar tags personalizadas
+- ✅ CRUD completo de tags personalizadas (criar, listar, editar, deletar)
 - ✅ Validação de cor hexadecimal (#RGB ou #RRGGBB)
 - ✅ Listar tags disponíveis (sistema + pessoais)
+- ✅ Proteção contra edição/deleção de tags do sistema
 - ✅ Proteção contra duplicação de nomes
 
 ---
@@ -261,24 +262,24 @@ npm test -- tests/integration/tags.test.js
 npm test -- --coverage
 ```
 
-**Resultado atual: 88.02% de cobertura**
+**Resultado atual: 88.08% de cobertura**
 
 ```
 -----------------------|---------|----------|---------|---------|
 File                   | % Stmts | % Branch | % Funcs | % Lines |
 -----------------------|---------|----------|---------|---------|
-All files              |   88.02 |    88.23 |   81.81 |   89.36 |
- src/controllers       |   80.95 |    93.33 |      75 |   83.16 |
+All files              |   88.08 |       92 |   80.76 |   89.17 |
+ src/controllers       |   82.73 |    95.65 |   78.57 |   84.44 |
  src/middlewares       |     100 |      100 |     100 |     100 |
  src/models            |   85.71 |       25 |   83.33 |   85.71 |
  src/validators        |     100 |      100 |     100 |     100 |
 -----------------------|---------|----------|---------|---------|
 ```
 
-**38 testes passando:**
+**51 testes passando:**
 - 10 testes de autenticação
 - 16 testes de tarefas (CRUD completo)
-- 9 testes de tags
+- 22 testes de tags (CRUD completo)
 - 3 testes de configuração
 
 ---

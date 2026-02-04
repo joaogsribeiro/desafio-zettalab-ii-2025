@@ -16,7 +16,10 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Servidor Local',
       },
-      // Depois adicionaremos o servidor de produção aqui
+      {
+        url: 'https://taskmanager-api-zettalab.onrender.com',
+        description: 'Servidor de Produção',
+      },
     ],
     components: {
       securitySchemes: {
@@ -28,7 +31,7 @@ const options = {
       },
     },
   },
-  // Onde o Swagger vai procurar os comentários da documentação?
+  // Caminhos dos arquivos com anotações Swagger
   apis: ['./src/routes.js', './src/controllers/*.js'], 
 };
 
