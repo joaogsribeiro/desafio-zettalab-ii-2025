@@ -7,6 +7,9 @@
 [![Coverage](https://img.shields.io/badge/Coverage-88.02%25-brightgreen.svg)](https://github.com/facebook/jest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+> 🌐 **API em Produção:** [https://taskmanager-api-zettalab.onrender.com](https://taskmanager-api-zettalab.onrender.com)  
+> 📚 **Documentação Interativa:** [https://taskmanager-api-zettalab.onrender.com/api-docs](https://taskmanager-api-zettalab.onrender.com/api-docs)
+
 ## 📝 Descrição
 
 API RESTful completa para gerenciamento de tarefas (To-Do List) desenvolvida como parte do desafio técnico da ZettaLab. A aplicação oferece autenticação JWT, CRUD completo de tarefas, sistema híbrido de tags (sistema + personalizadas), e relacionamentos N:N entre entidades.
