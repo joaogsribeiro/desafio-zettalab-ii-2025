@@ -11,6 +11,7 @@ const authMiddleware = require("./middlewares/auth");
 // --- IMPORTA OS VALIDADORES ---
 const UserValidator = require("./validators/UserValidator");
 const TaskValidator = require("./validators/TaskValidator");
+const TagValidator = require("./validators/TagValidator");
 
 // Rotas Públicas
 
@@ -215,20 +216,26 @@ routes.get("/tasks", TaskController.index);
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                 title:
+ *                 msg:
  *                   type: string
- *                 description:
- *                   type: string
- *                 status:
- *                   type: string
- *                 user_id:
- *                   type: integer
- *                 tags:
- *                   type: array
- *                   items:
- *                     type: object
+ *                   example: Tarefa criada com sucesso
+ *                 task:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     title:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     user_id:
+ *                       type: integer
+ *                     tags:
+ *                       type: array
+ *                       items:
+ *                         type: object
  *       400:
  *         description: Título obrigatório ou tag(s) não encontrada(s)
  *         content:
@@ -420,25 +427,10 @@ routes.get("/tags", TagController.index);
  *               color:
  *                 type: string
  *                 example: "#9333EA"
- *                 description: Cor em hexadecimal (opcional, padrão é cinza)
+ *                 description: Cor em hexadecimal (#RGB ou #RRGGBB, opcional, padrão é #ddd)
  *     responses:
  *       201:
- *         description: Tag criada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 name:
- *                   type: string
- *                 color:
- *                   type: string
- *                 user_id:
- *                   type: integer
- *       200:
- *         description: Tag já existia para este usuário
+ *         description: Tag criada com sucesso (ou já existia - idempotente)
  *         content:
  *           application/json:
  *             schema:
@@ -446,13 +438,41 @@ routes.get("/tags", TagController.index);
  *               properties:
  *                 msg:
  *                   type: string
+ *                   example: Tag criada com sucesso
+ *                   description: Indica se foi criada ou já existia
  *                 tag:
  *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     name:
+ *                       type: string
+ *                     color:
+ *                       type: string
+ *                     user_id:
+ *                       type: integer
+ *                 created:
+ *                   type: boolean
+ *                   example: true
+ *                   description: true se foi criada, false se já existia
  *       400:
- *         description: Nome obrigatório ou conflito com tag do sistema
+ *         description: Validação falhou (nome obrigatório, cor inválida) ou conflito com tag do sistema
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Erro de validação
+ *                 messages:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["Cor inválida. Use formato hexadecimal (#RRGGBB ou #RGB)"]
  *       401:
  *         description: Token não fornecido ou inválido
  */
-routes.post("/tags", TagController.create);
+routes.post("/tags", TagValidator.validateCreate, TagController.create);
 
 module.exports = routes;

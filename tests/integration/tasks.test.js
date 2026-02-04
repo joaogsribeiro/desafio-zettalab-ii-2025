@@ -135,11 +135,12 @@ describe('Tasks Integration Tests', () => {
         .send(taskData)
         .expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('title', 'Nova Tarefa');
-      expect(response.body).toHaveProperty('status', 'PENDING');
-      expect(response.body).toHaveProperty('tags');
-      expect(Array.isArray(response.body.tags)).toBe(true);
+      expect(response.body).toHaveProperty('msg', 'Tarefa criada com sucesso');
+      expect(response.body.task).toHaveProperty('id');
+      expect(response.body.task).toHaveProperty('title', 'Nova Tarefa');
+      expect(response.body.task).toHaveProperty('status', 'PENDING');
+      expect(response.body.task).toHaveProperty('tags');
+      expect(Array.isArray(response.body.task.tags)).toBe(true);
     });
 
     it('should create a task with system tags', async () => {
@@ -156,9 +157,9 @@ describe('Tasks Integration Tests', () => {
         .send(taskData)
         .expect(201);
 
-      expect(response.body).toHaveProperty('tags');
-      expect(Array.isArray(response.body.tags)).toBe(true);
-      expect(response.body.tags).toHaveLength(1);
+      expect(response.body.task).toHaveProperty('tags');
+      expect(Array.isArray(response.body.task.tags)).toBe(true);
+      expect(response.body.task.tags).toHaveLength(1);
     });
 
     it('should not create task without required fields', async () => {

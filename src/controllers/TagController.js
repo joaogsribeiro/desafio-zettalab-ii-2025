@@ -29,10 +29,6 @@ module.exports = {
     try {
       const { name, color } = req.body;
 
-      if (!name) {
-        return res.status(400).json({ error: 'Nome da tag é obrigatório' });
-      }
-
       // Verifica se já existe tag do sistema com esse nome
       const systemTag = await Tag.findOne({ 
         where: { name, user_id: null } 
@@ -50,14 +46,12 @@ module.exports = {
         defaults: { color: color || '#ddd' }
       });
 
-      if (!created) {
-        return res.status(200).json({ 
-          msg: 'Você já possui uma tag com esse nome',
-          tag 
-        });
-      }
-
-      return res.status(201).json(tag);
+      // Retorna 201 tanto para criação quanto para tag existente (idempotente)
+      return res.status(201).json({
+        msg: created ? 'Tag criada com sucesso' : 'Tag já existe',
+        tag,
+        created
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Erro ao criar tag' });

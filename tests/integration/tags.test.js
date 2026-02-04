@@ -135,10 +135,11 @@ describe('Tags Integration Tests', () => {
         .send(tagData)
         .expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('name', 'Nova Tag Pessoal');
-      expect(response.body).toHaveProperty('color', '#FF5733');
-      expect(response.body).toHaveProperty('user_id', userId);
+      expect(response.body).toHaveProperty('msg', 'Tag criada com sucesso');
+      expect(response.body.tag).toHaveProperty('id');
+      expect(response.body.tag).toHaveProperty('name', 'Nova Tag Pessoal');
+      expect(response.body.tag).toHaveProperty('color', '#FF5733');
+      expect(response.body.tag).toHaveProperty('user_id', userId);
     });
 
     it('should create tag with default color if not provided', async () => {
@@ -152,7 +153,7 @@ describe('Tags Integration Tests', () => {
         .send(tagData)
         .expect(201);
 
-      expect(response.body).toHaveProperty('color', '#ddd');
+      expect(response.body.tag).toHaveProperty('color', '#ddd');
     });
 
     it('should not create tag with system tag name', async () => {
@@ -188,9 +189,10 @@ describe('Tags Integration Tests', () => {
         .post('/tags')
         .set('Authorization', `Bearer ${authToken}`)
         .send(tagData)
-        .expect(200);
+        .expect(201);
 
-      expect(response.body).toHaveProperty('msg', 'Você já possui uma tag com esse nome');
+      expect(response.body).toHaveProperty('msg', 'Tag já existe');
+      expect(response.body).toHaveProperty('created', false);
     });
 
     it('should allow different users to have tags with same name', async () => {
@@ -227,7 +229,7 @@ describe('Tags Integration Tests', () => {
         .send(tagData)
         .expect(201);
 
-      expect(response.body).toHaveProperty('name', 'Tag Comum');
+      expect(response.body.tag).toHaveProperty('name', 'Tag Comum');
     });
 
     it('should not create tag without required fields', async () => {
@@ -237,7 +239,23 @@ describe('Tags Integration Tests', () => {
         .send({}) // Sem dados
         .expect(400);
 
-      expect(response.body).toHaveProperty('error', 'Nome da tag é obrigatório');
+      expect(response.body).toHaveProperty('error', 'Erro de validação');
+    });
+
+    it('should not create tag with invalid color format', async () => {
+      const tagData = {
+        name: 'Tag com cor inválida',
+        color: 'azul' // Formato inválido
+      };
+
+      const response = await request(app)
+        .post('/tags')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(tagData)
+        .expect(400);
+
+      expect(response.body).toHaveProperty('error', 'Erro de validação');
+      expect(response.body.messages[0]).toContain('hexadecimal');
     });
   });
 });
