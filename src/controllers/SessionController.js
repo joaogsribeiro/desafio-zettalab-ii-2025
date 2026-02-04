@@ -13,7 +13,7 @@ module.exports = {
       return res.status(401).json({ error: 'Usuário não encontrado' });
     }
 
-    // 2. Verifica se a senha bate (usando aquele método que criamos no Model)
+    // 2. Verifica se a senha está correta
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
@@ -27,7 +27,7 @@ module.exports = {
         name,
         email,
       },
-      // Aqui a mágica acontece: assinamos o token com o ID do usuário
+      // Gera o token JWT com o ID do usuário
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       }),

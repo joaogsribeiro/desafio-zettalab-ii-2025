@@ -13,7 +13,7 @@ const UserValidator = require("./validators/UserValidator");
 const TaskValidator = require("./validators/TaskValidator");
 const TagValidator = require("./validators/TagValidator");
 
-// Rota raiz - redireciona para documentação
+// Rota raiz - informações da API
 routes.get("/", (req, res) => {
   res.json({
     message: "🚀 Task Manager API - ZettaLab Challenge",

@@ -44,7 +44,7 @@ module.exports = (sequelize) => {
     }
   });
 
-  // Método auxiliar para checar senha no login (vamos usar mais tarde)
+  // Método auxiliar para verificar senha no login
   User.prototype.checkPassword = function(password) {
     return bcrypt.compare(password, this.password_hash);
   };

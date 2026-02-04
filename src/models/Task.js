@@ -20,8 +20,6 @@ module.exports = (sequelize) => {
       defaultValue: 'PENDING',
       allowNull: false,
     },
-    // A Chave Estrangeira (user_id) será criada automaticamente pelo Sequelize
-    // quando definirmos a associação no próximo passo.
   });
 
   return Task;

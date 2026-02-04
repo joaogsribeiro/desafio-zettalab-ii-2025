@@ -4,7 +4,7 @@ const dbConfig = require('../config/database');
 // Importa os modelos
 const UserModel = require('../models/User');
 const TaskModel = require('../models/Task');
-const TagModel = require('../models/Tag'); // <--- Novo!
+const TagModel = require('../models/Tag');
 
 // Cria a conexão
 // Se dbConfig tem 'url', usa ela diretamente, senão usa o objeto completo
@@ -15,7 +15,7 @@ const connection = dbConfig.url
 // Inicializa os modelos
 const User = UserModel(connection);
 const Task = TaskModel(connection);
-const Tag = TagModel(connection); // <--- Novo!
+const Tag = TagModel(connection);
 
 // --- DEFININDO OS RELACIONAMENTOS ---
 
