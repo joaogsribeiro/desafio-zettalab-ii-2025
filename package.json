@@ -2,7 +2,7 @@
   "name": "desafio-zettalab-ii-2025",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
