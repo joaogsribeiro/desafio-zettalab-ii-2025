@@ -152,7 +152,7 @@ Certifique-se de ter instalado:
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/desafio-zettalab-ii-2025.git
+git clone https://github.com/joaogsribeiro/desafio-zettalab-ii-2025.git
 cd desafio-zettalab-ii-2025
 ```
 
